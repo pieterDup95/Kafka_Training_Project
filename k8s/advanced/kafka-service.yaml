@@ -1,0 +1,19 @@
+# Headless service — gives each StatefulSet pod a stable DNS entry
+# (kafka-0.kafka-headless) used by KAFKA_CONTROLLER_QUORUM_VOTERS
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka-headless
+  namespace: kafka-crash-course
+spec:
+  clusterIP: None
+  selector:
+    app: kafka
+  ports:
+    - name: plaintext
+      port: 9092
+      targetPort: 9092
+    - name: controller
+      port: 9093
+      targetPort: 9093
+

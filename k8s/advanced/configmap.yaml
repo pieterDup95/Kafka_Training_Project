@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kafka-config
+  namespace: kafka-crash-course
+data:
+  # Used by producer and tracker to locate the broker
+  KAFKA_BOOTSTRAP_SERVERS: "kafka:9092"

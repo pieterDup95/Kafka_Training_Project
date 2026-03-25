@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: order-consumer
+spec:
+  containers:
+    - name: consumer
+      image: tracker:latest
+      imagePullPolicy: Never
+      tty: true
+      env:
+        - name: KAFKA_BOOTSTRAP_SERVERS
+          value: "kafka-service:9092"   
+        - name: KAFKA_GROUP_ID
+          value: "order-tracker"
+        - name: KAFKA_OFFSET_RESET
+          value: "earliest"
+        - name: KAFKA_TOPIC
+          value: "orders"
