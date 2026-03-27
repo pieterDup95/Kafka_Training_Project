@@ -65,10 +65,6 @@ cd ..
 ```
 If this fails, run the commands in deploy.sh seperatly.
 
-Deploy the consumer (3 replicas):
-```bash
-kubectl apply -f k8s/tracker-deployment.yaml
-```
 
 Verify consumers are running:
 ```bash
@@ -86,11 +82,6 @@ cd ..
 ```
 If this fails, run the commands in deploy.sh seperatly.
 
-
-Run the producer job:
-```bash
-kubectl apply -f k8s/auto-producer.yaml
-```
 
 Monitor producer progress:
 ```bash
