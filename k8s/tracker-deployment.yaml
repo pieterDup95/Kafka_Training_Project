@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order-consumer
+  labels:
+    app: order-consumer
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: order-consumer
+  template:
+    metadata:
+      labels:
+        app: order-consumer
+    spec:
+      containers:
+        - name: consumer
+          image: tracker:latest
+          imagePullPolicy: Never
+          tty: true
+          env:
+            - name: KAFKA_BOOTSTRAP_SERVERS
+              value: "kafka-service:9092"
+            - name: KAFKA_GROUP_ID
+              value: "order-tracker"
+            - name: KAFKA_OFFSET_RESET
+              value: "earliest"
+            - name: KAFKA_TOPIC
+              value: "orders"
+            - name: KAFKA_CONSUMED_TOPIC
+              value: "order-consumed"
+            - name: KAFKA_DLT_TOPIC
+              value: "orders.DLT"
+          resources:
+            requests:
+              memory: "128Mi"
+            limits:
+              memory: "256Mi"

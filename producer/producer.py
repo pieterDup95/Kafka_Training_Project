@@ -7,6 +7,12 @@ from confluent_kafka import Producer
 
 producer_config = {
     "bootstrap.servers": os.getenv("KAFKA_BOOTSTRAP_SERVERS", "kafka-service:9092"),
+    "enable.idempotence": True,
+    "acks": "all",
+    "retries": 10,
+    "retry.backoff.ms": 500,
+    "delivery.timeout.ms": 30000,
+    "max.in.flight.requests.per.connection": 5,
 }
 
 producer = Producer(producer_config)

@@ -1,0 +1,26 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: auto-producer
+spec:
+  ttlSecondsAfterFinished: 60    # auto-cleanup job 60s after completion
+  template:
+    metadata:
+      labels:
+        app: auto-producer
+    spec:
+      restartPolicy: OnFailure   # retry if it crashes, stop once successful
+      containers:
+        - name: auto-producer
+          image: auto-producer:latest
+          imagePullPolicy: Never
+          env:
+            - name: KAFKA_BOOTSTRAP_SERVERS
+              value: "kafka-service:9092"
+            - name: KAFKA_TOPIC
+              value: "orders"
+          resources:
+            requests:
+              memory: "128Mi"
+            limits:
+              memory: "256Mi"

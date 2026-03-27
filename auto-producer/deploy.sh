@@ -27,6 +27,8 @@ set -e  # Exit immediately if a command exits with a non-zero status
 
 
  export KUBECONFIG="/mnt/c/Users/CP375007/.kube/config"
-nerdctl --namespace k8s.io build --insecure-registry -t producer:latest .
-kubectl apply -f ../k8s/producer.yaml --validate=false
+ nerdctl --namespace k8s.io build -t auto-producer:latest .
+
+kubectl apply -f ../k8s/auto-producer.yaml
+
 kubectl get pods

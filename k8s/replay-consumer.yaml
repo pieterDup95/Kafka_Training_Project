@@ -1,0 +1,34 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: replay-consumer
+spec:
+  ttlSecondsAfterFinished: 300  # Keep for 5 minutes after completion for log inspection
+  template:
+    metadata:
+      labels:
+        app: replay-consumer
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: replay-consumer
+          image: tracker:latest
+          imagePullPolicy: Never
+          env:
+            - name: KAFKA_BOOTSTRAP_SERVERS
+              value: "kafka-service:9092"
+            - name: KAFKA_GROUP_ID
+              value: "order-tracker-replay-2026-03-26"  
+            - name: KAFKA_OFFSET_RESET
+              value: "earliest"
+            - name: KAFKA_TOPIC
+              value: "orders"
+            - name: KAFKA_CONSUMED_TOPIC
+              value: "order-consumed"
+            - name: KAFKA_DLT_TOPIC
+              value: "orders.DLT"
+          resources:
+            requests:
+              memory: "128Mi"
+            limits:
+              memory: "256Mi"

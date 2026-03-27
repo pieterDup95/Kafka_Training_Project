@@ -1,0 +1,72 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: kafka-topic-init
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: init-topics
+          image: confluentinc/cp-kafka
+          command:
+            - /bin/bash
+            - -c
+            - |
+              # Create orders topic (delete policy, 7 day retention)
+              kafka-topics \
+                --bootstrap-server kafka-0.kafka-headless:9092 \
+                --create \
+                --if-not-exists \
+                --topic orders \
+                --partitions 3 \
+                --replication-factor 3 \
+                --config retention.ms=604800000 \
+                --config min.insync.replicas=2 \
+                --config cleanup.policy=delete
+
+              # Create order-consumed topic (delete policy, 3 day retention)
+              kafka-topics \
+                --bootstrap-server kafka-0.kafka-headless:9092 \
+                --create \
+                --if-not-exists \
+                --topic order-consumed \
+                --partitions 3 \
+                --replication-factor 3 \
+                --config retention.ms=259200000 \
+                --config min.insync.replicas=2 \
+                --config cleanup.policy=delete
+
+              # Create orders.DLT topic (delete policy, 30 day retention)
+              kafka-topics \
+                --bootstrap-server kafka-0.kafka-headless:9092 \
+                --create \
+                --if-not-exists \
+                --topic orders.DLT \
+                --partitions 3 \
+                --replication-factor 3 \
+                --config retention.ms=2592000000 \
+                --config min.insync.replicas=2 \
+                --config cleanup.policy=delete
+
+              echo "Topic creation complete. Verifying..."
+
+              kafka-topics \
+                --bootstrap-server kafka-0.kafka-headless:9092 \
+                --describe \
+                --topic orders
+
+              kafka-topics \
+                --bootstrap-server kafka-0.kafka-headless:9092 \
+                --describe \
+                --topic order-consumed
+
+              kafka-topics \
+                --bootstrap-server kafka-0.kafka-headless:9092 \
+                --describe \
+                --topic orders.DLT
+          resources:
+            requests:
+              memory: "128Mi"
+            limits:
+              memory: "256Mi"
